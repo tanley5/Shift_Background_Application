@@ -65,6 +65,41 @@ class Shift:
         self.set_filled_rows()
         self.set_current_sent()
 
+    def send_email(self):
+        email = self.email_object
+        to = self.current_sent
+        fr = "tanley.bench@usanainc.com"
+        subject = f"{self.report_name} Shiftbid"
+        # send email
+    
+    def send_email_admin(self):
+        email = self.email_object
+        to = "tanley.bench@usanainc.com"
+        fr = "tanley.bench@usanainc.com"
+        subject = f"{self.report_name} Shiftbid Completed"
+        #add attachement 
+        #send email
+
+    def check_updates(self):
+        if self.complete:
+            print(f"Report: {self.report_name}; Status: Complete")
+        else:
+            filled_rows = self.get_filled_rows()
+            empty_rows = self.get_empty_rows()
+            
+            if len(filled_rows) != self.filled_rows_number and len(empty_rows) != self.empty_rows_number:
+                return True
+            else:
+                return False
+    
+    def run_report(self):
+        status = self.check_updates()
+        if status == True:
+            self.update_object()
+            self.send_email()
+        else:
+            pass
+
     # def check_updates(self):
 
     #     if len(self.filled_rows) == len(self.all_rows):
