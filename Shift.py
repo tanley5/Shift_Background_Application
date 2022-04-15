@@ -6,7 +6,7 @@ class Shift:
         # Initial Constants
         self.report_name = report_name
         self.sql_obj = sqlconnection
-        self.iteration = 0
+        self.sent_to_admin = False
         self.complete = False
         
         # Additional Methods For object
@@ -81,8 +81,10 @@ class Shift:
         #send email
 
     def check_updates(self):
-        if self.complete:
+        if self.filled_rows_number == len(self.all_rows):
+            self.complete = True
             print(f"Report: {self.report_name}; Status: Complete")
+            return False
         else:
             filled_rows = self.get_filled_rows()
             empty_rows = self.get_empty_rows()
@@ -94,19 +96,15 @@ class Shift:
     
     def run_report(self):
         status = self.check_updates()
-        if status == True:
-            self.update_object()
-            self.send_email()
-        else:
+        if self.sent_to_admin == True:
             pass
-
-    # def check_updates(self):
-
-    #     if len(self.filled_rows) == len(self.all_rows):
-    #         self.complete = True
-    #         print(f"Report Name: {self.report_name}; Status: Complete")
-    #     elif len(self.empty_rows) != self.empty_rows_number:
-    #         self.set_filled_rows()
-    #         self.empty_rows_number = len(self.empty_rows)
-    #         print(f"Report Name: {self.report_name}; Status: Updated")
-        
+        else:
+            if self.complete:
+                self.send_email_admin()
+                self.sent_to_admin = True
+            else:
+                if status == True:
+                    self.update_object()
+                    self.send_email()
+                else:
+                    pass
