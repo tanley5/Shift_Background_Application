@@ -9,13 +9,17 @@ class Shift:
         self.iteration = 0
         self.complete = False
         
-        # Additional Identities For object
+        # Additional Methods For object
         self.cur = self.create_cursor()
         self.email_object = self.set_email_object()
-        self.total_rows = self.get_all_shift_rows()
+        self.all_rows = self.get_all_shift_rows()
         self.empty_rows = self.get_empty_rows()
         self.filled_rows = self.get_filled_rows()
         self.current_sent = self.get_current_sent()
+
+        # Additional identifies
+        self.empty_rows_number = len(self.empty_rows)
+        self.filled_rows_number = len(self.filled_rows)
         
         
     def create_cursor(self):
@@ -42,9 +46,32 @@ class Shift:
         query = ''
         return self.cur.execute(query)
 
-    def update_obj(self):
+    def set_all_shift_rows(self):
+        self.all_rows = self.get_all_shift_rows()
+    
+    def set_empty_rows(self):
+        self.empty_rows = self.get_empty_rows()
+    
+    def set_filled_rows(self):
+        self.filled_rows = self.get_filled_rows()
+
+    def set_current_sent(self):
+        self.current_sent = self.get_current_sent()
+
+    def update_object(self):
         self.set_all_shift_rows()
+        self.set_empty_rows()
         self.set_empty_rows()
         self.set_filled_rows()
         self.set_current_sent()
-        self.set_iteration()
+
+    # def check_updates(self):
+
+    #     if len(self.filled_rows) == len(self.all_rows):
+    #         self.complete = True
+    #         print(f"Report Name: {self.report_name}; Status: Complete")
+    #     elif len(self.empty_rows) != self.empty_rows_number:
+    #         self.set_filled_rows()
+    #         self.empty_rows_number = len(self.empty_rows)
+    #         print(f"Report Name: {self.report_name}; Status: Updated")
+        
