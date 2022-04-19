@@ -28,6 +28,7 @@ if __name__ == '__main__':
                 
                 if o.check_if_updated(conn):
                     print("Updated")
+                    o.subsequent_attributes_update(conn)
                 else:
                     print("No update")
     else:

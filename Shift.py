@@ -45,9 +45,11 @@ class Shift:
         # queries
         filled_shift_query = f"select shift.agent_email, shift.datetime_modified, shift.shift, sb.report_name from shift_shift shift JOIN shiftbid_shiftbid sb on sb.id = shift.report_id WHERE sb.report_name = '{self.report_name}' and shift.agent_email != ''"
         empty_shifts_query = f"select shift.agent_email, shift.datetime_modified, shift.shift, sb.report_name from shift_shift shift JOIN shiftbid_shiftbid sb on sb.id = shift.report_id WHERE sb.report_name = '{self.report_name}' and shift.agent_email = ''"
+        current_seniority_query = f" select seniority.agent_net_id, seniority.agent_email, seniority.seniority_number, sb.report_name from seniority_seniority seniority JOIN shiftbid_shiftbid sb on sb.id = seniority.report_id WHERE sb.report_name = '{self.report_name}'	AND seniority.seniority_number = (SELECT min(seniority.seniority_number) from seniority_seniority seniority join shiftbid_shiftbid sb on sb.id = seniority.report_id join shift_shift shift on shift.report_id = sb.id where sb.report_name = '{self.report_name}' AND shift.agent_email = '') "
         #updating attributes
         self.filled_shifts = pd.read_sql_query(filled_shift_query,sql_connection)
         self.empty_shifts = pd.read_sql_query(empty_shifts_query,sql_connection)
+        self.current_seniority = pd.read_sql_query(current_seniority_query,sql_connection)
 
     @classmethod
     def send_email(cls,email_object):
