@@ -5,10 +5,17 @@ import os
 import Shift
 import threading
 import glob
+import win32com.client
+
+def create_email_object():
+    outlook = win32com.client.Dispatch('outlook.application')
+    mail = outlook.CreateItem(0)
+    return mail
 
 if __name__ == '__main__':
-    db_name = 'C:/Users/tbench/Documents/django-projects/shiftbid_stuff/Shift_Seniority_Updated/db.sqlite3'
-    conn = sqlite3.connect(db_name)
+    db_string = 'C:/Users/tbench/Documents/django-projects/shiftbid_stuff/Shift_Seniority_Updated/db.sqlite3'
+    conn = sqlite3.connect(db_string)
+    cur = conn.cursor()
     if any(os.scandir("./pickle")):
         # If pickle directory is not empty, load the pickle object, run the task, pickle object, and go to sleep
         print("Not Empty")
@@ -26,7 +33,7 @@ if __name__ == '__main__':
             cur = conn.cursor()
             for row in cur.execute('''SELECT report_name FROM shiftbid_shiftbid'''):
                 #print(row[0])
-                shift = Shift.Shift(row[0],db_name)
+                shift = Shift.Shift(row[0])
                 with open(f"./pickle/{shift.report_name}.pickle",'w+b') as obj:
                     pickle.dump(shift,obj,pickle.HIGHEST_PROTOCOL)
                 print(shift.report_name)
