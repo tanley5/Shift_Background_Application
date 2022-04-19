@@ -1,8 +1,10 @@
+from fnmatch import fnmatch
 import sqlite3
 import pickle
 import os
 import Shift
 import threading
+import glob
 
 if __name__ == '__main__':
     db_name = 'C:/Users/tbench/Documents/django-projects/shiftbid_stuff/Shift_Seniority_Updated/db.sqlite3'
@@ -10,6 +12,11 @@ if __name__ == '__main__':
     if any(os.scandir("./pickle")):
         # If pickle directory is not empty, load the pickle object, run the task, pickle object, and go to sleep
         print("Not Empty")
+        for f_name in glob.glob('./pickle/*.pickle'):
+            #print(f_name)
+            with open(f_name,'rb') as f:
+                o = pickle.load(f)
+                print(o.report_name)
     else:
         # if pickle directory is empty, create the object from the DB, run the task, pickle the object, and go to sleep
         print("Empty")
@@ -19,7 +26,9 @@ if __name__ == '__main__':
             cur = conn.cursor()
             for row in cur.execute('''SELECT report_name FROM shiftbid_shiftbid'''):
                 #print(row[0])
-                shift = Shift.Shift(row[0],conn)
+                shift = Shift.Shift(row[0],db_name)
+                with open(f"./pickle/{shift.report_name}.pickle",'w+b') as obj:
+                    pickle.dump(shift,obj,pickle.HIGHEST_PROTOCOL)
                 print(shift.report_name)
 
     # Initially, create object from database and marshall object and put tasks to sleep

@@ -2,24 +2,24 @@ import sqlite3
 import win32com.client
 
 class Shift:
-    def __init__(self, report_name, sqlconnection):
+    def __init__(self, report_name, sql_connection_path):
         # Initial Constants
         self.report_name = report_name
-        self.sql_obj = sqlconnection
+        self.sql_connection_path = sql_connection_path
         self.sent_to_admin = False
         self.complete = False
         
         # Additional Methods For object
-        self.cur = self.create_cursor()
-        self.email_object = self.set_email_object()
-        self.all_rows = self.get_all_shift_rows()
-        self.empty_rows = self.get_empty_rows()
-        self.filled_rows = self.get_filled_rows()
-        self.current_sent = self.get_current_sent()
+        # self.cur = self.create_cursor()
+        # self.email_object = self.set_email_object()
+        # self.all_rows = self.get_all_shift_rows()
+        # self.empty_rows = self.get_empty_rows()
+        # self.filled_rows = self.get_filled_rows()
+        # self.current_sent = self.get_current_sent()
 
-        # Additional identifies
-        self.empty_rows_number = len(self.empty_rows)
-        self.filled_rows_number = len(self.filled_rows)
+        # # Additional identifies
+        # self.empty_rows_number = len(self.empty_rows)
+        # self.filled_rows_number = len(self.filled_rows)
         
         
     def create_cursor(self):
