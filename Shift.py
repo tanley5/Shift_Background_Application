@@ -1,5 +1,5 @@
 import sqlite3
-
+import pandas as pd
 
 class Shift:
     def __init__(self, report_name):
@@ -12,6 +12,18 @@ class Shift:
         self.filled_shifts = None
         self.empty_shifts = None
         self.all_seniotiry = None
+
+    def initial_attributes_update(self,sql_connection):
+        # queries to run
+        all_shift_query = f"select shift.agent_email, shift.datetime_modified, shift.shift, sb.report_name from shift_shift shift JOIN shiftbid_shiftbid sb on sb.id = shift.report_id WHERE sb.report_name = '{self.report_name}'"
+        # filled_shift_query = ""
+        # empty_shifts_query = ""
+        # all_seniority_query = ""
+        # updating the attributes
+        self.all_shifts =  pd.read_sql_query(all_shift_query,sql_connection)# sql_cursor.execute(all_shift_query)
+        # cls.filled_shifts = cur.execute(filled_shift_query)
+        # cls.empty_shifts = cur.execute(empty_shifts_query)
+        # cls.all_seniotiry = cur.execute(all_seniority_query)
 
 
     @classmethod

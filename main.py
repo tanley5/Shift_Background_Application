@@ -23,19 +23,23 @@ if __name__ == '__main__':
             #print(f_name)
             with open(f_name,'rb') as f:
                 o = pickle.load(f)
-                print(o.report_name)
+                print(o.all_shifts)
     else:
         # if pickle directory is empty, create the object from the DB, run the task, pickle the object, and go to sleep
         print("Empty")
         if (conn):
             print("Connected to sqlite3")
 
-            cur = conn.cursor()
             for row in cur.execute('''SELECT report_name FROM shiftbid_shiftbid'''):
                 #print(row[0])
                 shift = Shift.Shift(row[0])
-                with open(f"./pickle/{shift.report_name}.pickle",'w+b') as obj:
-                    pickle.dump(shift,obj,pickle.HIGHEST_PROTOCOL)
+                #print(shift.report_name)
+                shift.initial_attributes_update(conn)
+                #print(shift.all_shifts)
+                #[print(sh) for sh in shift.all_shifts.iterrows()]
+                #[print(row) for row in shift.all_shifts]
+                with open(f"./pickle/{shift.report_name}.pickle",'wb') as ob:
+                    pickle.dump(shift,ob)
                 print(shift.report_name)
 
     # Initially, create object from database and marshall object and put tasks to sleep
