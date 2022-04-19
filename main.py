@@ -23,7 +23,13 @@ if __name__ == '__main__':
             #print(f_name)
             with open(f_name,'rb') as f:
                 o = pickle.load(f)
-                print(o.all_shifts)
+                print(o.report_name)
+                print(o.current_seniority)
+                
+                if o.check_if_updated(conn):
+                    print("Updated")
+                else:
+                    print("No update")
     else:
         # if pickle directory is empty, create the object from the DB, run the task, pickle the object, and go to sleep
         print("Empty")
