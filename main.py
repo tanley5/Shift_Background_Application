@@ -2,6 +2,7 @@ from fnmatch import fnmatch
 import sqlite3
 import pickle
 import os
+from venv import create
 import Shift
 import threading
 import glob
@@ -16,6 +17,7 @@ if __name__ == '__main__':
     db_string = 'C:/Users/tbench/Documents/django-projects/shiftbid_stuff/Shift_Seniority_Updated/db.sqlite3'
     conn = sqlite3.connect(db_string)
     cur = conn.cursor()
+    email = create_email_object()
     if any(os.scandir("./pickle")):
         # If pickle directory is not empty, load the pickle object, run the task, pickle object, and go to sleep
         print("Not Empty")
@@ -23,14 +25,14 @@ if __name__ == '__main__':
             #print(f_name)
             with open(f_name,'rb') as f:
                 o = pickle.load(f)
-                print(o.report_name)
-                print(o.current_seniority)
-                
-                if o.check_if_updated(conn):
-                    print("Updated")
-                    o.subsequent_attributes_update(conn)
+                if o.check_complete(conn,email):
+                    print("Report complete")
                 else:
-                    print("No update")
+                    if o.check_if_updated(conn):
+                        print("Updated")
+                        o.subsequent_attributes_update(conn,email)
+                    else:
+                        print("No update")
     else:
         # if pickle directory is empty, create the object from the DB, run the task, pickle the object, and go to sleep
         print("Empty")

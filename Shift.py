@@ -29,6 +29,18 @@ class Shift:
         self.current_seniority = pd.read_sql_query(current_seniority_query,sql_connection)
         print(self.all_seniority)
 
+    def check_complete(self,sql_connection, email_object):
+        # query
+        all_shift_query = f"select shift.agent_email, shift.datetime_modified, shift.shift, sb.report_name from shift_shift shift JOIN shiftbid_shiftbid sb on sb.id = shift.report_id WHERE sb.report_name = '{self.report_name}'"
+        filled_shift_query = f"select shift.agent_email, shift.datetime_modified, shift.shift, sb.report_name from shift_shift shift JOIN shiftbid_shiftbid sb on sb.id = shift.report_id WHERE sb.report_name = '{self.report_name}' and shift.agent_email != ''"
+
+        if len(pd.read_sql_query(all_shift_query,sql_connection)) == len(pd.read_sql_query(filled_shift_query,sql_connection)):
+            self.complete = True
+            self.send_email_admin(email_object)
+            return self.complete
+        else:
+            return self.complete
+
     def check_if_updated(self,sql_connection):
         filled_shift_query = f"select shift.agent_email, shift.datetime_modified, shift.shift, sb.report_name from shift_shift shift JOIN shiftbid_shiftbid sb on sb.id = shift.report_id WHERE sb.report_name = '{self.report_name}' and shift.agent_email != ''"
         empty_shifts_query = f"select shift.agent_email, shift.datetime_modified, shift.shift, sb.report_name from shift_shift shift JOIN shiftbid_shiftbid sb on sb.id = shift.report_id WHERE sb.report_name = '{self.report_name}' and shift.agent_email = ''"
@@ -41,7 +53,7 @@ class Shift:
         else:
             return True
     
-    def subsequent_attributes_update(self,sql_connection):
+    def subsequent_attributes_update(self,sql_connection,email):
         # queries
         filled_shift_query = f"select shift.agent_email, shift.datetime_modified, shift.shift, sb.report_name from shift_shift shift JOIN shiftbid_shiftbid sb on sb.id = shift.report_id WHERE sb.report_name = '{self.report_name}' and shift.agent_email != ''"
         empty_shifts_query = f"select shift.agent_email, shift.datetime_modified, shift.shift, sb.report_name from shift_shift shift JOIN shiftbid_shiftbid sb on sb.id = shift.report_id WHERE sb.report_name = '{self.report_name}' and shift.agent_email = ''"
@@ -50,22 +62,21 @@ class Shift:
         self.filled_shifts = pd.read_sql_query(filled_shift_query,sql_connection)
         self.empty_shifts = pd.read_sql_query(empty_shifts_query,sql_connection)
         self.current_seniority = pd.read_sql_query(current_seniority_query,sql_connection)
+        self.send_email(email)
 
-    @classmethod
-    def send_email(cls,email_object):
+    def send_email(self,email_object):
         email = email_object
-        to = cls.current_sent
+        to = self.current_seniority["agent_emai"]
         fr = "tanley.bench@usanainc.com"
-        subject = f"{cls.report_name} Shiftbid"
+        subject = f"{self.report_name} Shiftbid"
         # send email
     
-    @classmethod
-    def send_email_admin(cls,email_object):
+    def send_email_admin(self,email_object):
         email = email_object
         to = "tanley.bench@usanainc.com"
         fr = "tanley.bench@usanainc.com"
-        subject = f"{cls.report_name} Shiftbid Completed"
-        #add attachement 
+        subject = f"{self.report_name} Shiftbid Completed"
+        #add attachment 
         #send email
 
     def __str__(self):
