@@ -77,7 +77,10 @@ class Shift:
         fr = "tanley.bench@usanainc.com"
         subject = f"{self.report_name} Shiftbid Completed"
         #add attachment 
+        self.all_shifts.to_excel(f"./attachment/{self.report_name}.xlsx", index=False)
+        email.Attachments.Add(f"./attachment/{self.report_name}.xlsx")
         #send email
+        email.sent()
 
     def __str__(self):
         return f"Report: {self.report_name}; Status: {self.complete}"
