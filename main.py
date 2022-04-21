@@ -31,6 +31,10 @@ if __name__ == '__main__':
                     if o.check_if_updated(conn):
                         print("Updated")
                         o.subsequent_attributes_update(conn,email)
+                        print(f"Report Name: {o.report_name}")
+                        with open(f"./pickle/{o.report_name}.pickle","wb") as f:
+                            pickle.dump(o,f)
+                        # Sleep / end
                     else:
                         print("No update")
     else:
@@ -49,6 +53,7 @@ if __name__ == '__main__':
                 #[print(row) for row in shift.all_shifts]
                 with open(f"./pickle/{shift.report_name}.pickle",'wb') as ob:
                     pickle.dump(shift,ob)
+                # Sleep / end
                 print(shift.report_name)
 
     # Initially, create object from database and marshall object and put tasks to sleep
