@@ -2,9 +2,7 @@ from fnmatch import fnmatch
 import sqlite3
 import pickle
 import os
-from venv import create
 import Shift
-import threading
 import glob
 import win32com.client
 
