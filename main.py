@@ -46,6 +46,7 @@ if __name__ == '__main__':
                 shift = Shift.Shift(row[0])
                 #print(shift.report_name)
                 shift.initial_attributes_update(conn)
+                shift.send_email(email)
                 #print(shift.all_shifts)
                 #[print(sh) for sh in shift.all_shifts.iterrows()]
                 #[print(row) for row in shift.all_shifts]
